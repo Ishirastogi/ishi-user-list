@@ -173,7 +173,22 @@ const UserList = () => {
   }
 
   if (filteredUsers.length === 0) {
-    return <Alert variant="info">No data to show</Alert>;
+    return (
+      <Container>
+        <Row className="mb-3">
+          <Col>
+            <InputGroup>
+              <FormControl
+                placeholder="Search by name"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+            </InputGroup>
+          </Col>
+        </Row>
+        <Alert variant="info">No data to show</Alert>
+      </Container>
+    );
   }
 
   return (
