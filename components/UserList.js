@@ -7,7 +7,6 @@ import {
   Alert,
   Col,
   Row,
-  Pagination,
   Container,
   FormControl,
   InputGroup,
@@ -19,9 +18,7 @@ const UserList = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const usersPerPage = 10;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -46,10 +43,6 @@ const UserList = () => {
     setSelectedUser(user);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
   const handleSearchChange = (event) => {
     const searchValue = event.target.value.toLowerCase();
     setSearchTerm(searchValue);
@@ -59,109 +52,6 @@ const UserList = () => {
         .includes(searchValue)
     );
     setFilteredUsers(filtered);
-    setCurrentPage(1); // Reset to first page on search
-  };
-
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-
-  const renderPagination = () => {
-    const pageNumbers = [];
-
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(
-          <Pagination.Item
-            key={i}
-            active={i === currentPage}
-            onClick={() => handlePageChange(i)}
-          >
-            {i}
-          </Pagination.Item>
-        );
-      }
-    } else {
-      pageNumbers.push(
-        <Pagination.Item
-          key={1}
-          active={1 === currentPage}
-          onClick={() => handlePageChange(1)}
-        >
-          1
-        </Pagination.Item>,
-        <Pagination.Item
-          key={2}
-          active={2 === currentPage}
-          onClick={() => handlePageChange(2)}
-        >
-          2
-        </Pagination.Item>
-      );
-
-      if (currentPage > 3) {
-        pageNumbers.push(<Pagination.Ellipsis key="start-ellipsis" />);
-      }
-
-      const startPage = Math.max(3, currentPage - 1);
-      const endPage = Math.min(totalPages - 2, currentPage + 1);
-
-      for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(
-          <Pagination.Item
-            key={i}
-            active={i === currentPage}
-            onClick={() => handlePageChange(i)}
-          >
-            {i}
-          </Pagination.Item>
-        );
-      }
-
-      if (currentPage < totalPages - 2) {
-        pageNumbers.push(<Pagination.Ellipsis key="end-ellipsis" />);
-      }
-
-      pageNumbers.push(
-        <Pagination.Item
-          key={totalPages - 1}
-          active={totalPages - 1 === currentPage}
-          onClick={() => handlePageChange(totalPages - 1)}
-        >
-          {totalPages - 1}
-        </Pagination.Item>,
-        <Pagination.Item
-          key={totalPages}
-          active={totalPages === currentPage}
-          onClick={() => handlePageChange(totalPages)}
-        >
-          {totalPages}
-        </Pagination.Item>
-      );
-    }
-
-    return (
-      <Pagination>
-        <Pagination.First
-          onClick={() => handlePageChange(1)}
-          disabled={currentPage === 1}
-        />
-        <Pagination.Prev
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        />
-        {pageNumbers}
-        <Pagination.Next
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        />
-        <Pagination.Last
-          onClick={() => handlePageChange(totalPages)}
-          disabled={currentPage === totalPages}
-        />
-      </Pagination>
-    );
   };
 
   if (loading) {
@@ -207,7 +97,7 @@ const UserList = () => {
       <Row>
         <Col md={4} className="mb-4">
           <ListGroup>
-            {currentUsers.map((user, i) => (
+            {filteredUsers.map((user, i) => (
               <ListGroup.Item
                 key={user.id + i}
                 onClick={() => handleUserClick(user)}
@@ -241,7 +131,6 @@ const UserList = () => {
               </ListGroup.Item>
             ))}
           </ListGroup>
-          <div className="mt-3">{renderPagination()}</div>
         </Col>
         <Col md={8}>
           {selectedUser ? (
