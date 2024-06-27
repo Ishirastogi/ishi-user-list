@@ -101,6 +101,14 @@ const UserList = () => {
               <ListGroup.Item
                 key={user.id + i}
                 onClick={() => handleUserClick(user)}
+                className={
+                  selectedUser
+                    ? user.id + user.profile.username ==
+                      selectedUser.id + selectedUser.profile.username
+                      ? "active"
+                      : undefined
+                    : undefined
+                }
               >
                 <Row className="align-items-center">
                   <Col xs={3}>
