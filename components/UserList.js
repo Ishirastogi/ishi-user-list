@@ -95,6 +95,41 @@ const UserList = () => {
         </Col>
       </Row>
       <Row>
+        <Col xs={12} className="mb-4 d-md-none">
+          {selectedUser ? (
+            <div>
+              <h4>
+                {selectedUser.profile.firstName} {selectedUser.profile.lastName}
+              </h4>
+              <p>
+                <strong>Username:</strong> {selectedUser.profile.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedUser.profile.email}
+              </p>
+              <p>
+                <strong>Job Title:</strong> {selectedUser.jobTitle}
+              </p>
+              <p>
+                <strong>Bio:</strong> {selectedUser.Bio}
+              </p>
+              <Image
+                src={selectedUser.avatar}
+                alt="Avatar"
+                rounded
+                width="150"
+                onError={(e) => {
+                  e.target.src = `https://via.placeholder.com/150?text=${selectedUser.profile.firstName.slice(
+                    0,
+                    1
+                  )}`; // Fallback to default image on error
+                }}
+              />
+            </div>
+          ) : (
+            <Alert variant="info">Select a user to see details</Alert>
+          )}
+        </Col>
         <Col md={4} className="mb-4">
           <ListGroup>
             {filteredUsers.map((user, i) => (
@@ -140,7 +175,7 @@ const UserList = () => {
             ))}
           </ListGroup>
         </Col>
-        <Col md={8}>
+        <Col md={8} className="d-none d-md-block">
           {selectedUser ? (
             <div>
               <h4>
